@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-14",
+  "process": "p p > mu+ mu- (Z/gamma*)",
+  "ecm_GeV": 13000,
+  "events": {
+    "LHE": 200,
+    "Pythia_accepted": 200,
+    "Delphes": 200,
+    "Parnassus": 200
+  },
+  "cross_section_pb_from_LHE": 646.355,
+  "selected_muon_objects": {
+    "truth": 378,
+    "Delphes": 334,
+    "Parnassus": 352
+  },
+  "selected_leading_dimuon_events": {
+    "Delphes": 137,
+    "Parnassus": 156
+  },
+  "dimuon_mass_mean_in_plot_range_GeV": {
+    "Delphes": 90.8320783602448,
+    "Parnassus": 90.51371349198455
+  },
+  "selection": "pT>10 GeV, |eta|<2.4; Delphes Muon is isolated by the card, Parnassus IsolationVar<0.25",
+  "seeds": {
+    "MadGraph": 12345,
+    "Pythia": 24680,
+    "detector": 31415
+  },
+  "same_seed_repeat_muon_PT": "exact numerical equality in all 200 events for both tools",
+  "input_sha256": "85e854cdc6ea64d78edc694769b8ebfe1868030dc91b979390a5c34a37b0e197",
+  "scope": "Local interface, event-count, stable-particle momentum-preservation and repeatability checks; not equivalence to full CMS simulation or NN physics validation.",
+  "original_smeftsim_repository": "unchanged commit and clean working tree",
+  "environment": {
+    "Python": "3.12.12",
+    "ROOT_wheel": "0.1a12 (CPython 3.12)",
+    "ROOT_core": "6.40.00",
+    "MadGraph": "2.9.27",
+    "Parnassus": "0.1.0",
+    "Pythia": "8.316.0",
+    "Delphes": "3.5.1",
+    "PyTorch": "2.7.1+cpu",
+    "runtime_dependency_on_smeftsim": false
+  },
+  "hard_event_payload_matches_previous_reference": true,
+  "pointwise_stable_particle_transfer": {
+    "max_stable_particle_momentum_difference": 0.0,
+    "max_stable_particle_vertex_difference_mm": 0.0,
+    "finite_reconstructed_PT_MET": true
+  },
+  "independence_checks": [
+    "project-owned Python base and imported packages",
+    "Delphes ldd and RUNPATH use own ROOT; no unresolved libraries",
+    "project-owned ROOT_INCLUDE_PATH and LD_LIBRARY_PATH",
+    "MadGraph process export, compile and 200-event generation on Python 3.12"
+  ],
+  "local_reference_outputs": "out/reference; exercise outputs use out root",
+  "LHE_phase_space_checked_event_by_event": {
+    "muon_pT_min_GeV": 10,
+    "abs_eta_max": 2.5,
+    "dimuon_mass_window_GeV": [
+      60,
+      120
+    ]
+  },
+  "ROOT_handbook_blocks": "Original 2026-10-14 handbook blocks executed; replaced by validated plot.py in the 2026-10-15 teaching revision",
+  "reference_histograms_unchanged": "All five histograms match previous reference bin contents, errors and entry counts exactly",
+  "teaching_update": {
+    "date": "2026-10-15",
+    "directories": {
+      "MadGraph": "tools/mg",
+      "process": "work/dy",
+      "outputs": "out"
+    },
+    "legacy_paths": "symlinks retained; original user data preserved",
+    "plot_script": "plot.py reads existing detector ROOT outputs; five histogram bin contents, errors and entries match the reference exactly",
+    "manual_package_calls": "Pythia handbook code executed for 200 events; both detector replays checked",
+    "isolation_exercise": {
+      "change": "Parnassus MuonIsolation dr=0.5 -> 0.3; fixed input, seed and batch size",
+      "raw_muon_PT": "unchanged",
+      "selected_muons_baseline": 352,
+      "selected_muons_smaller_cone": 359
+    }
+  }
+}

@@ -1,0 +1,23 @@
+dataset:
+  file_path: ""
+  num_events: 200
+  entry_start: 0
+generator:
+  type: parametric
+  name: cms
+  seed: 31415
+pipelines:
+  PFlowJetsAntiKt05:
+    type: cluster
+    collection: pflow
+    dr: 0.5
+    algorithm: antikt
+    pt_min: 10
+    nconst_min: 2
+  MuonIsolation:
+    type: isolation
+    collection: muons
+    dr: 0.5
+output:
+  file_path: ""
+  format: default

@@ -1,0 +1,11 @@
+! Pythia 8.316: external MadGraph hard events; full shower/hadronisation.
+Main:numberOfEvents = 200
+Beams:frameType = 4
+Beams:LHEF = out/hard.lhe
+Random:setSeed = on
+Random:seed = 24680
+ParticleDecays:limitTau0 = on
+ParticleDecays:tau0Max = 10
+Next:numberShowInfo = 0
+Next:numberShowProcess = 0
+Next:numberShowEvent = 0

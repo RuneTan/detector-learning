@@ -1,0 +1,11 @@
+* text=auto
+*.md text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.txt text eol=lf
+bin/root-config text eol=lf
+*.ps1 text eol=lf
+*.cmd text eol=lf
+*.png binary
+*.pdf binary
+*.root binary

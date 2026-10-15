@@ -1,0 +1,23 @@
+/tools/
+/.venv/
+/work/
+/py.py
+/outputs/
+/outputs
+/out/
+/config/delphes_CMS.tcl
+/.maintainer/
+__pycache__/
+*.pyc
+*.lhe
+*.lhe.gz
+*.hepmc
+*.root
+*.log
+*.tgz
+*.tar.gz
+!examples/comparison_histograms.root
+Personal access tokens(classic).txt
+*access*tokens*.txt
+.env
+.env.*

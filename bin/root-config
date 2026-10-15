@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -euo pipefail
+"$DETECTOR_ROOT/bin/root-config" "$@" | sed 's|/mock_site_packages/ROOT||g'
