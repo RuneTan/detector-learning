@@ -48,7 +48,7 @@ Delphes includes C++ FastJet/Tcl source; Parnassus uses the Python FastJet wheel
 | System tools | `/usr/bin` and related paths | Git, download tools and compilers, available to both projects |
 | Base Python interpreter | `tools/python/cpython-3.12.12-linux-x86_64-gnu` | Project-local Python used by `.venv`; do not delete it after copying only `.venv` |
 | Python environment | `.venv` | Isolates third-party Python packages; does not contain system compilers |
-| Python packages and prebuilt libraries | `.venv/lib/python3.12/site-packages` | ROOT, Pythia, HepMC, Parnassus, PyTorch and others; see the [lock file](requirements.lock.txt) |
+| Python packages and prebuilt libraries | `.venv/lib/python3.12/site-packages` | ROOT, Pythia, HepMC, Parnassus, PyTorch and others; see the [lock file](../requirements.lock.txt) |
 | Source and compiled programs | `tools/mg`, `tools/delphes` | Python drives MadGraph's generated Fortran; Delphes compiles to C++ programs |
 | Installation tool | `tools/uv/bin/uv` | Downloads Python, creates the environment and installs dependencies |
 | Graphics compatibility libraries | `.venv/local-libs` | libSM/libICE extracted from Ubuntu packages for this project's ROOT |
@@ -76,10 +76,10 @@ Delphes has been rebuilt against this project's ROOT. Both its library search pa
 
 A second Linux system is unnecessary. A new machine can install only Ubuntu and the software listed in [setup.md](setup.md), without installing the older project. On the prepared machine, enter either directory separately. Open a new terminal when switching projects, then activate the corresponding environment.
 
-**The prepared machine's Windows file `smeftsim/vm/SMEFTsim/ext4.vhdx` holds the shared Linux system and both directories above.** Independent software does not make that disk, or the entire Windows `smeftsim` directory, safe to delete. The Windows `detector-learning` folder contains small reading copies and launchers, not a second runtime.
+**The prepared machine's Windows file `projects/smeftsim/vm/SMEFTsim/ext4.vhdx` holds the shared Linux system and both directories above.** Independent software does not make that disk, or the entire Windows `smeftsim` directory, safe to delete. The Windows `projects/detector-learning` folder contains only a README and launcher; documentation and runtime files stay in Linux.
 
 ## 5. Validated scope
 
 The independent environment ran MadGraph → Pythia → both detector backends → ROOT plotting, with 200 events at each stage. Within each backend, same-input/same-seed replay gave exactly equal event-by-event muon pT values. Conversion differences for stable-particle four-momenta and production positions were zero. Actual Python package paths, Delphes shared libraries and RUNPATH do not refer to the older project.
 
-[examples/validation.json](examples/validation.json) records versions and results. These checks used the existing Ubuntu system; the setup guide has not yet been replayed in full on another fresh machine. The physics comparison remains a small-sample interface exercise; see the [handbook](handbook.md).
+[examples/validation.json](../examples/validation.json) records versions and results. These checks used the existing Ubuntu system; the setup guide has not yet been replayed in full on another fresh machine. The physics comparison remains a small-sample interface exercise; see the [handbook](handbook.md).

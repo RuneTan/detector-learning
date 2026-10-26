@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md)
 
-These results come from a local 200-event SM Drell–Yan exercise on 2026-10-14. The full chain was checked again with the independent Python 3.12 environment: hard-event contents and the HepMC input checksum matched the original baseline, as did selection counts and histograms. [validation.json](validation.json) records settings, event counts and environment versions; [SOURCES.md](../SOURCES.md) records versions and provenance.
+These results come from a local 200-event SM Drell–Yan exercise on 2026-10-14. The full chain was checked again with the independent Python 3.12 environment: hard-event contents and the HepMC input checksum matched the original baseline, as did selection counts and histograms. [validation.json](validation.json) records settings, event counts and environment versions; [SOURCES.md](../docs/SOURCES.md) records versions and provenance.
 
 | File | Contents |
 |---|---|

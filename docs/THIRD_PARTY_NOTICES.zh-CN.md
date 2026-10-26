@@ -16,7 +16,7 @@
 | pyhepmc，Hans Dembinski 及贡献者 | 2.16.1 | [BSD-3-Clause 许可](https://github.com/scikit-hep/pyhepmc/blob/0d9ed0adbeab5a812e43c1bf01c89b45cb93d5d8/LICENSE)；其 HepMC3 库采用 LGPL v3 |
 | FastJet 与 Scikit-HEP FastJet 绑定 | Python wheel 3.5.2.0 | [Python 绑定](https://github.com/scikit-hep/fastjet) 为 BSD-3-Clause；底层 FastJet C++ 库为 GPL v2 或以后版本 |
 
-CPU PyTorch 等其他 Python 依赖保留各自许可。安装时将它们下载到本地环境；版本见 [requirements.lock.txt](requirements.lock.txt)，许可见安装包自带文件。论文引用不能代替使用许可。
+CPU PyTorch 等其他 Python 依赖保留各自许可。安装时将它们下载到本地环境；版本见 [requirements.lock.txt](../requirements.lock.txt)，许可见安装包自带文件。论文引用不能代替使用许可。
 
 ## 本仓库实际发布的材料
 

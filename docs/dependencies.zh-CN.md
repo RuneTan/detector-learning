@@ -48,7 +48,7 @@ Delphes 自带 FastJet/Tcl 的 C++ 源码；Parnassus 使用 Python 的 FastJet 
 | 系统工具 | `/usr/bin` 等 | Git、下载工具和编译器；两个项目都可以使用 |
 | Python 基础解释器 | `tools/python/cpython-3.12.12-linux-x86_64-gnu` | `.venv` 所依赖的项目内 Python，不能只复制 `.venv` 后删掉它 |
 | Python 环境 | `.venv` | 隔离本项目的第三方 Python 包；不包含系统级编译器 |
-| Python 包及其预编译库 | `.venv/lib/python3.12/site-packages` | ROOT、Pythia、HepMC、Parnassus、PyTorch 等；版本见 [锁文件](requirements.lock.txt) |
+| Python 包及其预编译库 | `.venv/lib/python3.12/site-packages` | ROOT、Pythia、HepMC、Parnassus、PyTorch 等；版本见 [锁文件](../requirements.lock.txt) |
 | 源码及编译程序 | `tools/mg`、`tools/delphes` | MadGraph 用 Python 驱动生成并编译 Fortran；Delphes 编译为 C++ 程序 |
 | 安装工具 | `tools/uv/bin/uv` | 下载 Python、创建环境和安装依赖 |
 | 图形兼容库 | `.venv/local-libs` | 从 Ubuntu 包提取的 libSM/libICE；仅供本项目 ROOT 加载 |
@@ -76,10 +76,10 @@ Delphes 已用本项目 ROOT 重新编译，库搜索路径和二进制 RUNPATH 
 
 不需要第二套 Linux 系统。新机器可以只安装 Ubuntu 和本教程列出的软件，完全不安装旧项目；步骤见 [setup.md](setup.zh-CN.md)。当前机器保留原项目，你仍可分别进入两个目录学习。切换项目时打开新的终端，再激活对应环境。
 
-**本机 Windows 的 `smeftsim/vm/SMEFTsim/ext4.vhdx` 是共享 Linux 系统的磁盘，内部包含上面两个目录。** 软件独立不意味着可以删除这个磁盘或整个 Windows `smeftsim` 文件夹。Windows 的 `detector-learning` 是小文件阅读副本和入口，不是另一套运行环境。
+**本机 Windows 的 `projects/smeftsim/vm/SMEFTsim/ext4.vhdx` 是共享 Linux 系统的磁盘，内部包含上面两个目录。** 软件独立不意味着可以删除这个磁盘或整个 Windows `smeftsim` 文件夹。Windows 的 `projects/detector-learning` 只保留 README 和启动入口；文档、环境和运行结果统一位于 Linux。
 
 ## 5. 已验证的范围
 
 独立环境完成了 MadGraph → Pythia → 两种探测器 → ROOT 绘图：各阶段 200 事件；同输入、同种子重复运行的 Muon pT 在各自后端逐事件相等。稳定粒子四动量和产生位置转换差异为零。Python 包实际路径、Delphes 的共享库和 RUNPATH 均不引用旧项目。
 
-数值和版本记录见 [examples/validation.json](examples/validation.json)。这是现有 Ubuntu 系统上的运行验证；安装指南尚未在另一台全新机器完整重放。物理比较仍是小样本接口练习，范围见 [handbook](handbook.zh-CN.md)。
+数值和版本记录见 [examples/validation.json](../examples/validation.json)。这是现有 Ubuntu 系统上的运行验证；安装指南尚未在另一台全新机器完整重放。物理比较仍是小样本接口练习，范围见 [handbook](handbook.zh-CN.md)。

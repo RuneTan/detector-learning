@@ -2,7 +2,7 @@
 
 [English](README.md)
 
-这些结果来自 2026-10-14 的本地 200 事件 SM Drell–Yan 练习。整条链已使用独立 Python 3.12 环境重新验证：硬事件内容和 HepMC 输入校验值与原基线一致，选择计数和直方图也保持一致。完整设置、事件数和环境版本在 [validation.json](validation.json)，版本与来源在 [SOURCES](../SOURCES.zh-CN.md)。
+这些结果来自 2026-10-14 的本地 200 事件 SM Drell–Yan 练习。整条链已使用独立 Python 3.12 环境重新验证：硬事件内容和 HepMC 输入校验值与原基线一致，选择计数和直方图也保持一致。完整设置、事件数和环境版本在 [validation.json](validation.json)，版本与来源在 [SOURCES](../docs/SOURCES.zh-CN.md)。
 
 | 文件 | 内容 |
 |---|---|

@@ -2,7 +2,7 @@
 
 [简体中文](handbook.zh-CN.md)
 
-Use 200 SM dimuon events to understand a simulation chain. Read the [README](README.md) first. The prepared machine is ready; on a new machine, follow [setup.md](setup.md). See [dependencies.md](dependencies.md) for the dependency layers.
+Use 200 SM dimuon events to understand a simulation chain. Read the [README](../README.md) first. The prepared machine is ready; on a new machine, follow [setup.md](setup.md). See [dependencies.md](dependencies.md) for the dependency layers.
 
 The focus is how three packages process events. You call Pythia, run both detector backends and inspect their outputs. The supplied `plot.py` handles plots and count summaries, so you do not need to type a plotting program into the interpreter.
 
@@ -155,7 +155,7 @@ grep -c '<event>' out/hard.lhe
 
 Expect 200 events. `gzip -dc` sends decompressed contents to standard output, and `>` saves them as the next stage's input. This command overwrites an existing `out/hard.lhe`. Keep the output filename and `>` on the same command line.
 
-Pythia next reads `out/hard.lhe`; it does not automatically search MadGraph's run directories. The cross section and integration uncertainty appear in the banner/`<init>` block in pb. See the [example record](examples/validation.json) for the local reference value.
+Pythia next reads `out/hard.lhe`; it does not automatically search MadGraph's run directories. The cross section and integration uncertainty appear in the banner/`<init>` block in pb. See the [example record](../examples/validation.json) for the local reference value.
 
 ## 4. Pythia: turn hard scatterings into complete particle events
 
@@ -395,7 +395,7 @@ The muon analysis selection is $p_T>10$ GeV and $|\eta|<2.4$, with `IsolationVar
 
 Plots are normalized to 1 within the plotted range and compare shapes. The vertical axis is neither pb nor divided by bin width. Read acceptance from the raw counts in `counts.json`; distinguish object counts from event counts. With 200 events you cannot validate detailed detector performance, and the two responses need not coincide.
 
-First run `cat out/plots/counts.json`, then open the images. In WSL, `explorer.exe out/plots` opens that directory. See [examples](examples/README.md) for local reference plots and counts; different runs need not match every value.
+First run `cat out/plots/counts.json`, then open the images. In WSL, `explorer.exe out/plots` opens that directory. See [examples](../examples/README.md) for local reference plots and counts; different runs need not match every value.
 
 For different output names, tell the script explicitly:
 

@@ -2,7 +2,7 @@
 
 [English](handbook.md)
 
-本教程用 200 个 SM 双 Muon 事件认识模拟链。先看 [README](README.zh-CN.md)；本机环境已配置，新机器按 [setup](setup.zh-CN.md) 安装。依赖层次见 [dependencies](dependencies.zh-CN.md)。
+本教程用 200 个 SM 双 Muon 事件认识模拟链。先看 [README](../README.zh-CN.md)；本机环境已配置，新机器按 [setup](setup.zh-CN.md) 安装。依赖层次见 [dependencies](dependencies.zh-CN.md)。
 
 学习重点是三个包怎样处理事件。你亲手调用 Pythia、运行两个探测器并查看输出；已有的 `plot.py` 负责画图和汇总计数，不再要求手打画图程序。
 
@@ -155,7 +155,7 @@ grep -c '<event>' out/hard.lhe
 
 应有 200 个事件。`gzip -dc` 将解压内容写到标准输出，`>` 将它保存为下一步要读的文件；这条命令会覆盖已有的 `out/hard.lhe`。必须把输出文件名和 `>` 放在同一行。
 
-下一步 Pythia 读取 `out/hard.lhe`，不会自动寻找 MadGraph 的 run 目录。截面和积分误差在 banner/`<init>` 中，单位为 pb；本机参考值见 [示例记录](examples/validation.json)。
+下一步 Pythia 读取 `out/hard.lhe`，不会自动寻找 MadGraph 的 run 目录。截面和积分误差在 banner/`<init>` 中，单位为 pb；本机参考值见 [示例记录](../examples/validation.json)。
 
 ## 4. Pythia：把硬散射变成完整粒子事件
 
@@ -395,7 +395,7 @@ Muon 分析选择为 $p_T>10$ GeV、$|\eta|<2.4$；Parnassus 额外要求 `Isola
 
 图在绘图区间内归一化为 1，只比较形状，纵轴不是 pb，也没有除以 bin 宽度。接受率要从 `counts.json` 的原始计数读取；对象数与事件数不能混用。200 事件不足以验证精细探测器性能，两个响应不要求完全重合。
 
-你可以先执行 `cat out/plots/counts.json`，再打开图片。WSL 中可用 `explorer.exe out/plots` 打开该目录。本机参考图和计数见 [examples](examples/README.zh-CN.md)；不同 run 不要求逐个数值相同。
+你可以先执行 `cat out/plots/counts.json`，再打开图片。WSL 中可用 `explorer.exe out/plots` 打开该目录。本机参考图和计数见 [examples](../examples/README.zh-CN.md)；不同 run 不要求逐个数值相同。
 
 若使用其他输出名，显式告诉脚本：
 

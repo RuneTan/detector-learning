@@ -16,7 +16,7 @@ Checked on 2026-10-15. This independent teaching repository uses the projects be
 | pyhepmc, Hans Dembinski and contributors | 2.16.1 | [BSD-3-Clause license](https://github.com/scikit-hep/pyhepmc/blob/0d9ed0adbeab5a812e43c1bf01c89b45cb93d5d8/LICENSE); its HepMC3 library has LGPL v3 terms |
 | FastJet and Scikit-HEP FastJet bindings | Python wheel 3.5.2.0 | [Python bindings](https://github.com/scikit-hep/fastjet), BSD-3-Clause; the underlying FastJet C++ library is GPL v2 or later |
 
-Other Python dependencies, including CPU PyTorch, retain their own licenses. The installation downloads them into the local environment; see [requirements.lock.txt](requirements.lock.txt) and their installed license files. A citation is not a substitute for a license.
+Other Python dependencies, including CPU PyTorch, retain their own licenses. The installation downloads them into the local environment; see [requirements.lock.txt](../requirements.lock.txt) and their installed license files. A citation is not a substitute for a license.
 
 ## Material included here
 
