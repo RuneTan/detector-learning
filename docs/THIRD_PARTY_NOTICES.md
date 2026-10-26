@@ -20,7 +20,7 @@ Other Python dependencies, including CPU PyTorch, retain their own licenses. The
 
 ## Material included here
 
-The handbook and explanatory diagrams are independently written teaching notes. `hepmc_io.py` is an original adapter using public Pythia/pyhepmc APIs; `plot.py` is an original analysis script using ROOT APIs. They do not include an upstream generator, detector model or copied tutorial analysis implementation. `config/shower.cmnd` and `config/parnassus.yaml` contain settings for the documented interfaces.
+The handbook and explanatory diagrams are independently written teaching notes. `scripts/hepmc_io.py` is an original adapter using public Pythia/pyhepmc APIs; `scripts/plot.py` is an original analysis script using ROOT APIs. They do not include an upstream generator, detector model or copied tutorial analysis implementation. `config/shower.cmnd` and `config/parnassus.yaml` contain settings for the documented interfaces.
 
 The figures, numerical validation record and five `TH1D` objects in `examples/comparison_histograms.root` were produced by local simulations. The ROOT example contains histograms, not detector event trees or embedded source/macros. These small-sample results do not establish equivalence to full detector simulation.
 

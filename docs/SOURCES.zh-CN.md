@@ -23,9 +23,9 @@
 
 统一使用本项目 Python 3.12 环境。Pythia 的 Python wheel 已随 Parnassus 安装，所以不再装 C++ Pythia；pyhepmc 提供 HepMC3，所以不再编译独立 HepMC 库。Delphes 使用自带 FastJet/Tcl，只构建必要目标。Parnassus 使用上游运行依赖，没有安装开发 extras、GPU/CUDA 包或另写探测器模型。
 
-接口辅助文件仍是 `env.sh`、`bin/root-config`、`hepmc_io.py`。另外用一个 `plot.py` 集中 ROOT 读取、切选、画图和计数，让正文聚焦包的调用与事件流。它只分析已有输出，不代替生成、shower 或探测器模拟；不增加依赖或另建绘图框架。
+接口辅助文件仍是 `scripts/env.sh`、`bin/root-config`、`scripts/hepmc_io.py`。另外用一个 `scripts/plot.py` 集中 ROOT 读取、切选、画图和计数，让正文聚焦包的调用与事件流。它只分析已有输出，不代替生成、shower 或探测器模拟；不增加依赖或另建绘图框架。
 
-`hepmc_io.py` 是本项目编写的薄适配层，调用上游 API；没有复制 Parnassus 的转换算法。适配显式顶点编码，逐事件核对稳定粒子数及四动量。它不宣称完整验证了所有 Pythia 多代衰变拓扑，也不负责传递 SMEFT 多重权重。原事件记录仍由 LHE/Pythia 提供；研究扩展需另行检查完整历史与权重。
+`scripts/hepmc_io.py` 是本项目编写的薄适配层，调用上游 API；没有复制 Parnassus 的转换算法。适配显式顶点编码，逐事件核对稳定粒子数及四动量。它不宣称完整验证了所有 Pythia 多代衰变拓扑，也不负责传递 SMEFT 多重权重。原事件记录仍由 LHE/Pythia 提供；研究扩展需另行检查完整历史与权重。
 
 ## 许可证与归属
 

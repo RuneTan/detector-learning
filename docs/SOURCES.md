@@ -23,9 +23,9 @@ The teaching route draws on [smeftsim-learning](https://github.com/RuneTan/smeft
 
 All Python work uses this project's Python 3.12 environment. Parnassus already installs the Pythia Python wheel, so no separate C++ Pythia is installed. pyhepmc supplies HepMC3, avoiding a standalone HepMC build. Delphes uses its bundled FastJet/Tcl and only the necessary build targets. Parnassus uses its upstream runtime dependencies, without development extras, GPU/CUDA packages or a new detector implementation.
 
-The interface helpers are `env.sh`, `bin/root-config` and `hepmc_io.py`. A single `plot.py` concentrates ROOT reading, selections, plotting and counts, keeping the handbook focused on package calls and event flow. It only analyzes existing outputs; it does not replace generation, showering or detector simulation, add dependencies, or introduce a separate plotting framework.
+The interface helpers are `scripts/env.sh`, `bin/root-config` and `scripts/hepmc_io.py`. A single `scripts/plot.py` concentrates ROOT reading, selections, plotting and counts, keeping the handbook focused on package calls and event flow. It only analyzes existing outputs; it does not replace generation, showering or detector simulation, add dependencies, or introduce a separate plotting framework.
 
-`hepmc_io.py` is a thin adapter written for this project using upstream APIs; it does not copy Parnassus's conversion algorithm. It makes vertex encoding explicit and checks stable-particle counts and four-momenta event by event. It does not claim complete validation of every multigeneration Pythia decay topology, nor does it propagate SMEFT multiweights. LHE/Pythia supply the original event record; research extensions require further history and weight checks.
+`scripts/hepmc_io.py` is a thin adapter written for this project using upstream APIs; it does not copy Parnassus's conversion algorithm. It makes vertex encoding explicit and checks stable-particle counts and four-momenta event by event. It does not claim complete validation of every multigeneration Pythia decay topology, nor does it propagate SMEFT multiweights. LHE/Pythia supply the original event record; research extensions require further history and weight checks.
 
 ## Licenses and attribution
 

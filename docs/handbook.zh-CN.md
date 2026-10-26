@@ -2,9 +2,9 @@
 
 [English](handbook.md)
 
-本教程用 200 个 SM 双 Muon 事件认识模拟链。先看 [README](../README.zh-CN.md)；本机环境已配置，新机器按 [setup](setup.zh-CN.md) 安装。依赖层次见 [dependencies](dependencies.zh-CN.md)。
+本教程用 200 个 SM 双 Muon 事件认识模拟链。先看 [README](../README.zh-CN.md)，完成 [安装指南](setup.zh-CN.md) 后再执行包的调用。依赖层次见 [说明](dependencies.zh-CN.md)。
 
-学习重点是三个包怎样处理事件。你亲手调用 Pythia、运行两个探测器并查看输出；已有的 `plot.py` 负责画图和汇总计数，不再要求手打画图程序。
+学习重点是三个包怎样处理事件。你亲手调用 Pythia、运行两个探测器并查看输出；已有的 `scripts/plot.py` 负责画图和汇总计数，不再要求手打画图程序。
 
 每条 **Bash 命令整行输入 → 回车 → 等提示符回来**。进入 Python 后提示符是 `>>>`；普通语句逐行回车，循环末尾另按一次空白回车。卡文件的内容在编辑器里修改。
 
@@ -16,13 +16,13 @@
 flowchart LR
     MG["MadGraph：硬散射"] --> LHE["out/hard.lhe"]
     LHE --> PY["Pythia：辐射、强子化、衰变"]
-    PY --> IO["hepmc_io.py：格式交换"]
+    PY --> IO["scripts/hepmc_io.py：格式交换"]
     IO --> HEP["out/showered.hepmc"]
     HEP --> DEL["Delphes + CMS Tcl 卡"]
     HEP --> PAR["Parnassus + CMS YAML 卡"]
     DEL --> DR["out/delphes.root"]
     PAR --> PR["out/parnassus.root"]
-    DR --> PLOT["plot.py：ROOT 分析"]
+    DR --> PLOT["scripts/plot.py：ROOT 分析"]
     PR --> PLOT
     PLOT --> FIG["out/plots：图和计数"]
 ```
@@ -43,11 +43,11 @@ flowchart LR
 
 ## 2. 进入项目，只输入一次长路径
 
-Windows 中双击 `enter-linux.cmd`。看到 Linux 提示符后逐条执行：
+打开 Linux 终端；Windows 读者打开安装步骤中准备的 Ubuntu。逐条执行：
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 python --version
 ```
@@ -63,23 +63,15 @@ python --version
 | `out/plots` | 画图脚本生成的图、直方图和计数 |
 | `examples` | 随教程提供的小型参考结果 |
 
-当前机器已将旧长目录换为这些短名称，并保留旧名称的符号链接。你之前用 `outputs`、`work/drell_yan` 生成的结果仍然保留，不需要重跑或复制；后续统一用短名称。
+整篇手册统一使用上表中的路径。软件、过程和输出目录按后续步骤建立，克隆仓库时不会自动生成这些内容。
 
-MadGraph、Pythia、Parnassus、ROOT 都使用这个环境的 `python`。Delphes 是链接本项目 ROOT 的 C++ 程序。`env.sh` 只影响当前终端；切回原 SMEFTsim 项目时打开新终端。
+MadGraph、Pythia、Parnassus、ROOT 都使用这个环境的 `python`。Delphes 是链接本项目 ROOT 的 C++ 程序。`scripts/env.sh` 只影响当前终端；切回原 SMEFTsim 项目时打开新终端。
 
 ## 3. MadGraph：准备硬散射输入
 
 这一节读取过程定义和卡，输出 **LHE**。它完成硬散射矩阵元及相空间抽样，还没有生成完整强子事件或探测器响应。
 
-你已经生成过 `out/hard.lhe` 时可直接进入第 4 节。本机还保留一份参考输入，若只学习下游，可执行：
-
-```bash
-mkdir -p out
-cp -n out/reference/hard.lhe out/hard.lhe
-grep -c '<event>' out/hard.lhe
-```
-
-`cp -n` 在目标已存在时不覆盖；计数应为 200。新机器不附这份完整 LHE，需要按下面步骤生成。
+若已生成自己的 `out/hard.lhe`，可进入第 4 节。新克隆的仓库不提供完整 LHE 输入，请按下面的 3.1–3.3 节生成。
 
 ### 3.1 导出过程
 
@@ -155,7 +147,7 @@ grep -c '<event>' out/hard.lhe
 
 应有 200 个事件。`gzip -dc` 将解压内容写到标准输出，`>` 将它保存为下一步要读的文件；这条命令会覆盖已有的 `out/hard.lhe`。必须把输出文件名和 `>` 放在同一行。
 
-下一步 Pythia 读取 `out/hard.lhe`，不会自动寻找 MadGraph 的 run 目录。截面和积分误差在 banner/`<init>` 中，单位为 pb；本机参考值见 [示例记录](../examples/validation.json)。
+下一步 Pythia 读取 `out/hard.lhe`，不会自动寻找 MadGraph 的 run 目录。截面和积分误差在 banner/`<init>` 中，单位为 pb；参考结果见 [示例记录](../examples/validation.json)。
 
 ## 4. Pythia：把硬散射变成完整粒子事件
 
@@ -223,7 +215,7 @@ print(sum(p.isFinal() for p in pythia.event))
 
 ```python
 import pyhepmc
-from hepmc_io import to_hepmc
+from scripts.hepmc_io import to_hepmc
 pythia = pythia8mc.Pythia()
 assert pythia.readFile("config/shower.cmnd")
 assert pythia.init()
@@ -251,7 +243,7 @@ exit()
 
 `close()` 完成文件写入；`nAccepted()` 返回成功处理数；`stat()` 打印统计，不再生成新事件。应看到 200 个 accepted events。如果某次 `next()` 失败，本练习先停下检查，不使用遇到 EOF 后无限重试的循环。
 
-`hepmc_io.py` 是现有的格式适配模块：使用 `GenEvent.from_hepevt`，设置 GeV/mm 单位、稳定粒子、四动量、产生位置及 SM 权重，并核对转换前后的稳定粒子数和四动量。它没有增加一次 shower 或探测器响应。
+`scripts/hepmc_io.py` 是现有的格式适配模块：使用 `GenEvent.from_hepevt`，设置 GeV/mm 单位、稳定粒子、四动量、产生位置及 SM 权重，并核对转换前后的稳定粒子数和四动量。它没有增加一次 shower 或探测器响应。
 
 模块整理显式顶点编码，是为了兼容 Delphes 3.5.1 的读取器；`vertex.status=1` 是顶点编码标记，不是粒子切选。完整多代历史及 SMEFT 多权重传播超出本次验证范围。接口依据见 [来源](SOURCES.zh-CN.md)。
 
@@ -274,11 +266,11 @@ sha256sum out/showered.hepmc
 - **输入：** 同一份 `out/showered.hepmc` 和 CMS Tcl 卡。
 - **处理：** 依照卡中的模块顺序，模拟效率、分辨率、量能器及重建。
 - **输出：** `out/delphes.root`，其中树名是 `Delphes`。
-- **下一步：** `plot.py` 读取 `Muon`、`Particle` 等分支。
+- **下一步：** `scripts/plot.py` 读取 `Muon`、`Particle` 等分支。
 
 ### 5.1 Tcl 卡是一张模块执行图
 
-本机已有 `config/delphes_CMS.tcl`，直接阅读。新工作区只准备一次：
+首次使用时，从已安装的 Delphes 中复制一份卡到 `config/delphes_CMS.tcl`。若已配置过这份文件，保留它并跳过复制：
 
 ```bash
 cp tools/delphes/cards/delphes_card_CMS.tcl config/delphes_CMS.tcl
@@ -318,14 +310,14 @@ tools/delphes/DelphesHepMC3 config/delphes_CMS.tcl out/delphes.root out/showered
 
 程序按事件读取输入、运行整张模块图并写树；不会调用 MadGraph 或 Pythia。这个“卡、输出、输入”的顺序来自 [Delphes 接口](https://delphes.github.io/workbook/quick-tour/)。
 
-Delphes 拒绝覆盖已有 ROOT 文件。你已经跑完旧手册时跳过这次基线运行；尝试新设置时换名，例如 `out/delphes2.root`。第 7 节会核对树中的事件数，不能只凭“正常退出”判断没有丢事件。
+Delphes 拒绝覆盖已有 ROOT 文件。若已完成这次基线运行，可跳过重复执行；尝试新设置时换名，例如 `out/delphes2.root`。第 7 节会核对树中的事件数，不能只凭“正常退出”判断没有丢事件。
 
 ## 6. Parnassus：从同一输入走另一种响应
 
 - **输入：** 同一份 `out/showered.hepmc` 和 YAML 卡。
 - **处理：** 参数化 CMS 响应，再执行 YAML 中的聚类和隔离计算。
 - **输出：** `out/parnassus.root`，其中树名是 `Parnassus`。
-- **下一步：** `plot.py` 读取 `Muons.*` 等分支，与 Delphes 比较。
+- **下一步：** `scripts/plot.py` 读取 `Muons.*` 等分支，与 Delphes 比较。
 
 ### 6.1 区分响应模型与后处理 pipeline
 
@@ -379,7 +371,7 @@ OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 parnassus run -c config/parnassus.yaml -i ou
 已经跑完上面两种探测器后，在 **Bash** 执行：
 
 ```bash
-python plot.py
+python scripts/plot.py
 ```
 
 脚本读取 `out/delphes.root` 和 `out/parnassus.root`，检查树、分支及各 200 个事件，再用 ROOT 画图。它不重新运行模拟、不修改两份输入。重新执行会替换 `out/plots` 中同名分析产物。
@@ -395,15 +387,15 @@ Muon 分析选择为 $p_T>10$ GeV、$|\eta|<2.4$；Parnassus 额外要求 `Isola
 
 图在绘图区间内归一化为 1，只比较形状，纵轴不是 pb，也没有除以 bin 宽度。接受率要从 `counts.json` 的原始计数读取；对象数与事件数不能混用。200 事件不足以验证精细探测器性能，两个响应不要求完全重合。
 
-你可以先执行 `cat out/plots/counts.json`，再打开图片。WSL 中可用 `explorer.exe out/plots` 打开该目录。本机参考图和计数见 [examples](../examples/README.zh-CN.md)；不同 run 不要求逐个数值相同。
+你可以先执行 `cat out/plots/counts.json`，再打开图片。WSL 中可用 `explorer.exe out/plots` 打开该目录。参考图和计数见 [examples](../examples/README.zh-CN.md)；不同 run 不要求逐个数值相同。
 
 若使用其他输出名，显式告诉脚本：
 
 ```bash
-python plot.py --delphes out/delphes2.root --parnassus out/parnassus.root --out out/plots2
+python scripts/plot.py --delphes out/delphes2.root --parnassus out/parnassus.root --out out/plots2
 ```
 
-事件数改变时添加 `--expect 新事件数`。`python plot.py --help` 查看参数。脚本源码集中在一个文件，不需要将其中的 ROOT 语句再打进终端。
+事件数改变时添加 `--expect 新事件数`。`python scripts/plot.py --help` 查看参数。脚本源码集中在一个文件，不需要将其中的 ROOT 语句再打进终端。
 
 ## 8. 用一个小改动认识 pipeline
 
@@ -420,7 +412,7 @@ nano config/iso.yaml
 
 ```bash
 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 parnassus run -c config/iso.yaml -i out/showered.hepmc -ne 200 -bs 10 -o out/iso.root --random_seed 31415
-python plot.py --parnassus out/iso.root --out out/iso
+python scripts/plot.py --parnassus out/iso.root --out out/iso
 ```
 
 这条 `parnassus run` 命令仍从 HepMC 完整重跑响应和后处理。输入、模型、种子、batch size 和版本保持一致，使参数化响应重现原来的 Muon 动量；此次新增的变化来自隔离后处理的锥。比较 `out/plots/counts.json` 与 `out/iso/counts.json`：满足隔离选择的 Muon 可能变化，小样本不保证计数一定改变。隔离量和选择一起决定最终画图用的集合。

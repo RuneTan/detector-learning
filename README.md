@@ -2,61 +2,57 @@
 
 [简体中文](README.zh-CN.md)
 
-A manual **MadGraph → Pythia → Delphes / Parnassus** tutorial. Follow one small simulation through its files, understand what each package does, and change one setting at a time. A single ROOT plotting script handles the repetitive analysis.
+A hands-on **MadGraph → Pythia → Delphes / Parnassus** tutorial. Follow a small event sample from hard scattering to detector output, change one setting at a time, and inspect the results with ROOT.
 
-**Start with the [handbook](docs/handbook.md).** On a new machine, follow [setup.md](docs/setup.md) first. The project has its own Python 3.12 environment and toolchain; the [SMEFTsim learning tutorial](https://github.com/RuneTan/smeftsim-learning) is a teaching reference, not a prerequisite.
+## Start here
 
-The benchmark is 200 SM Drell–Yan events, `p p > mu+ mu-`, at 13 TeV. Delphes and Parnassus read the **same HepMC3 file**. Parnassus uses its CPU parametric CMS model; this exercise does not train or validate a neural detector model.
+This repository contains teaching files and small reference results. Cloning it does **not** install Linux, Python or the simulation packages.
 
-```mermaid
-flowchart LR
-    MG[MadGraph] --> LHE[out/hard.lhe]
-    LHE --> PY[Pythia]
-    PY --> HEP[out/showered.hepmc]
-    HEP --> DEL[Delphes]
-    HEP --> PAR[Parnassus]
-    DEL --> PLOT[plot.py / ROOT]
-    PAR --> PLOT
-    PLOT --> FIG[out/plots]
-```
-
-Guides and reference documentation live in [docs](docs/README.md).
-
-| File or directory | Role |
+| Your starting point | Next step |
 |---|---|
-| [handbook.md](docs/handbook.md) | Package calls, inputs and outputs, and a one-setting exercise |
-| [setup.md](docs/setup.md) | Standalone Linux installation of Python, ROOT and the toolchain |
-| [dependencies.md](docs/dependencies.md) | System, environment and package dependencies |
-| `env.sh` | Paths for the current terminal; no shell-profile or global Python changes |
-| `hepmc_io.py` | Pythia/HepMC adapter with stable-particle and momentum checks |
-| `plot.py` | Read detector outputs, check event counts, and make ROOT plots and a count summary |
-| `bin/root-config` | Correct the pinned ROOT wheel's compiler paths without changing ROOT |
-| `requirements.lock.txt` | Pinned Python dependencies, including ROOT and CPU PyTorch |
-| `config` | Pythia and Parnassus settings; copy the Delphes card from upstream during setup |
-| [examples](examples/README.md) | Reference figures, validation records and plotting histograms |
-| `tools`, `work/dy`, `out` | Local software, exported MadGraph process and run outputs; not distributed |
-| [SOURCES.md](docs/SOURCES.md) | Upstream tutorials and pinned versions |
-| [THIRD_PARTY_NOTICES.md](docs/THIRD_PARTY_NOTICES.md) | Software attribution, scientific references and license scope |
+| Windows without Linux | Follow [setup](docs/setup.md) to install WSL 2 and Ubuntu, then continue in the Ubuntu terminal |
+| Native Linux or an existing WSL 2 Ubuntu | Follow [setup](docs/setup.md) to install this project's environment and tools |
+| Installation checks completed | Follow the [handbook](docs/handbook.md) to generate events and run the detector chain |
+| Only browsing the supplied figures | Open [reference results](examples/README.md) |
 
-Clone the small teaching repository inside Linux, then follow the installation guide:
+The documented platform is x86-64 Ubuntu 22.04, either native or under WSL 2. The SMEFTsim learning repository is a [related tutorial](https://github.com/RuneTan/smeftsim-learning), not an installation prerequisite.
+
+After completing setup, run these commands in **Linux Bash**:
 
 ```bash
-git clone https://github.com/RuneTan/detector-learning.git ~/detector-learning
 cd ~/detector-learning
+source scripts/env.sh
+source .venv/bin/activate
 ```
 
-Software downloads, `.venv`, raw runs and maintenance logs are excluded. New users generate the raw inputs themselves; the repository includes only small reference results.
+Then start [handbook section 3](docs/handbook.md#3-madgraph-prepare-the-hard-scattering-input). Generate the inputs before running the analysis. Once both detector ROOT files exist:
 
-![Stable-truth and detector-level muon transverse momentum](examples/muon_pt.png)
+```bash
+python scripts/plot.py
+```
 
-The figure is normalized within its plotted range and compares shapes, not absolute cross sections. The [example guide](examples/README.md) explains the counts and limitations.
+This reads `out/delphes.root` and `out/parnassus.root`, checks their event counts, and writes figures, histograms and counts into `out/plots`.
 
-## Existing-machine notes
+## Repository layout
 
-The prepared installation is `/home/smeft/detector-learning` in a WSL distribution named `SMEFTsim`. Its own Python 3.12.12 environment includes ROOT/PyROOT, Pythia and Parnassus; MadGraph and Delphes also live inside this project. It uses no interpreter, package or shared library from `/home/smeft/smeftsim`.
+| Location | Contents |
+|---|---|
+| [docs](docs/README.md) | Installation, handbook, dependencies, sources and third-party notices |
+| [scripts](scripts/README.md) | Environment settings, ROOT analysis and the Pythia/HepMC adapter |
+| [config](config) | Pythia and Parnassus settings; setup explains how to obtain a Delphes card |
+| [examples](examples/README.md) | Small reference figures, histograms and validation records |
+| `bin/root-config` | Build helper for the pinned ROOT wheel |
+| `requirements.lock.txt` | Pinned Python dependencies |
+| `tools`, `.venv`, `work`, `out` | Created during installation or execution; excluded from Git |
 
-On that machine, double-click `enter-linux.cmd`, start at handbook section 2, and use `python plot.py` if both detector outputs already exist. The launchers contain machine-specific distribution, user and directory names; edit them before use elsewhere. Native Linux does not need them.
+All commands in the guides run from the project root unless a step explicitly changes directory. On Windows, open your installed Ubuntu distribution before using Linux commands.
 
-The projects share Ubuntu and its compilers. The Windows file `projects/smeftsim/vm/SMEFTsim/ext4.vhdx` holds that entire Linux filesystem, including both projects: **do not delete it**. The Windows tutorial folder contains only a README and launcher; documentation and calculations live in Linux. See [dependencies.md](docs/dependencies.md).
+## Example and scope
 
-This is a learning and interface-validation project. [Third-party notices](docs/THIRD_PARTY_NOTICES.md) document attribution, scientific references and license boundaries; no project-wide reuse license has been selected.
+The reference exercise uses 200 SM Drell–Yan events, `p p > mu+ mu-`, at 13 TeV. Delphes and Parnassus read the same HepMC3 input. Parnassus uses a CPU parametric CMS response; this exercise does not train or validate a neural detector model.
+
+![Stable truth and reconstructed muon transverse momentum](examples/muon_pt.png)
+
+The figure compares shapes normalized within the plotted range. Counts and limitations are explained in [examples](examples/README.md). Raw event samples are not distributed; generate your own using the handbook.
+
+This is a learning and interface-validation project. [Third-party notices](docs/THIRD_PARTY_NOTICES.md) describe attribution and license boundaries; no project-wide reuse license has been selected.

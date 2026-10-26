@@ -2,7 +2,7 @@
 
 [English](setup.md)
 
-当前机器已经完成安装和运行校验，直接使用 [handbook](handbook.zh-CN.md)。这页给新机器或需要重建环境的读者使用；**不需要先安装 SMEFTsim 教程**。依赖层次见 [dependencies.md](dependencies.zh-CN.md)。
+这份指南从尚未安装教程的机器开始。克隆仓库只会得到教学文件，不会自动准备模拟环境。请先准备 Linux、安装依赖并完成下列检查，再进入 [学习手册](handbook.zh-CN.md)。不需要先安装 SMEFTsim 教程；依赖关系见 [说明](dependencies.zh-CN.md)。
 
 固定路线：x86-64 Ubuntu 22.04、项目内 Python 3.12.12、一个 `.venv`，以及本项目自己的 MadGraph、ROOT、Pythia、Delphes 和 Parnassus。系统编译器由 Linux 提供，Python 与科学软件安装在项目目录。步骤不会修改 Windows Python 或原项目环境。
 
@@ -10,7 +10,7 @@
 
 ## 1. 准备 Linux 系统
 
-本机可继续使用现有 WSL 发行版 `SMEFTsim`，不需要创建第二块虚拟磁盘。
+使用 x86-64 Ubuntu 22.04。已有原生 Linux 的读者直接准备下面的系统工具；Windows 读者先安装 WSL 2 和 Ubuntu。
 
 新 Windows 机器可按 [Microsoft WSL 安装指南](https://learn.microsoft.com/windows/wsl/install) 安装 Ubuntu 22.04。在管理员 **PowerShell** 中执行：
 
@@ -18,7 +18,14 @@
 wsl --install -d Ubuntu-22.04
 ```
 
-按提示重启并启动 Ubuntu，设置自己的 Linux 用户名和密码。下面命令均在 **Linux Bash** 中执行。已经使用原生 Ubuntu 或已有 WSL Ubuntu 的读者跳过这一段。
+按提示重启。从开始菜单打开 Ubuntu 22.04，创建自己的 Linux 用户名和密码。也可以在 PowerShell 中查看发行版并进入 Ubuntu：
+
+```powershell
+wsl --list --verbose
+wsl -d Ubuntu-22.04
+```
+
+该发行版的 VERSION 列应为 2。之后的命令全部在 Ubuntu 终端的 Linux Bash 中执行。原生 Linux 读者跳过 WSL 命令。
 
 首次准备系统工具：
 
@@ -30,7 +37,7 @@ g++ --version
 gfortran --version
 ```
 
-应看到 `x86_64` 和编译器版本。`sudo` 在这里仅安装 Linux 系统工具，不用它安装 Python 包；已经具备这些工具的本机不需重复安装。
+应看到 `x86_64` 和编译器版本。`sudo` 在这里仅安装 Linux 系统工具，不用它安装 Python 包；已有这些工具时先核对版本，再跳过对应安装步骤。
 
 ## 2. 获取教学文件
 
@@ -40,14 +47,14 @@ gfortran --version
 git clone https://github.com/RuneTan/detector-learning.git ~/detector-learning
 cd ~/detector-learning
 mkdir -p tools work out
-source env.sh
+source scripts/env.sh
 ```
 
-目录已存在时跳过克隆，进入项目即可。`env.sh` 根据自己的位置确定项目根目录，将 Python 下载位置、uv 缓存和终端路径限定到本项目，不改 `.bashrc`。此时 Python/ROOT 尚未安装，后面的步骤会创建它们。
+目录已存在时跳过克隆，进入项目即可。`scripts/env.sh` 根据自己的位置确定项目根目录，将 Python 下载位置、uv 缓存和终端路径限定到本项目，不改 `.bashrc`。此时 Python/ROOT 尚未安装，后面的步骤会创建它们。
 
-Windows 文件管理器可访问 `\\wsl.localhost\发行版名称\home\你的Linux用户名\detector-learning`。本机对应 `\\wsl.localhost\SMEFTsim\home\smeft\detector-learning`。
+Windows 读者克隆后，可在文件管理器中访问 `\\wsl.localhost\Ubuntu-22.04\home\你的Linux用户名\detector-learning`。请填写自己安装的发行版和用户名；发行版名称可用 `wsl --list --verbose` 查询。
 
-`enter-linux.ps1` 中的发行版名、用户名和 Linux 目录采用本机名称；在其他机器使用入口前，替换为自己的值。原生 Linux 不需要 Windows 入口。
+日常使用时打开自己安装的 Ubuntu 终端，再运行 `cd ~/detector-learning`，不需要预先配置的 Windows 启动脚本。
 
 ## 3. 获取项目内 Python 和科学软件包
 
@@ -77,7 +84,7 @@ tools/uv/bin/uv pip install --python .venv/bin/python -r requirements.lock.txt
 
 ROOT wheel 的版本为 `0.1a12`，对应 ROOT 6.40.00；这是本教程固定并验证的构建，不代表 ROOT 网站当前最新版。wheel 提供 C++ ROOT 库、命令行程序和 PyROOT，不能复用其他 Python 小版本的 wheel。
 
-本机的最小 Ubuntu 缺少 ROOT 绘图需要的 libSM/libICE。下面下载 Ubuntu 软件包并**提取到项目内**，不用 `sudo` 安装：
+部分精简 Ubuntu 环境需要额外的 libSM/libICE 才能使用 ROOT 图形功能。下面下载 Ubuntu 软件包并提取到项目内，不用 `sudo` 安装到系统：
 
 ```bash
 mkdir -p .venv/local-libs/debs
@@ -97,7 +104,7 @@ done
 
 ```bash
 cd ../../..
-source env.sh
+source scripts/env.sh
 python -c "import ROOT, torch; print(ROOT.gROOT.GetVersion()); print(torch.__version__)"
 ```
 
@@ -139,7 +146,7 @@ ROOT wheel 的 `root-config` 给出的路径带有多余的 `mock_site_packages/
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 chmod +x bin/root-config
 which python
@@ -151,15 +158,15 @@ ls -lh tools/delphes/DelphesHepMC3 tools/delphes/libDelphes.so tools/delphes/Cla
 
 `python` 应位于本项目 `.venv/bin`，`root-config` 应位于本项目 `bin`；头文件路径应指向本项目 ROOT。`-j4` 控制并行编译，不是事件数。只构建必要程序、共享库和字典，避免安装本练习不用的其他读取器或额外 C++ Pythia/HepMC 库。
 
-若此前已经用别处的 ROOT 编译过这个 Delphes，必须先执行 `make -C tools/delphes clean`，再执行上面的构建命令。本机已经完成这次重新编译；普通日常学习无需重复构建。
+若此前已经用别处的 ROOT 编译过这个 Delphes，必须先执行 `make -C tools/delphes clean`，再执行上面的构建命令。应使用本指南安装的 ROOT 进行构建；普通日常使用无需反复编译。
 
-`env.sh` 提供本项目 ROOT 及其附带库、图形兼容库和 Delphes 头文件的搜索路径，保证生成的字典也能正确加载。
+`scripts/env.sh` 提供本项目 ROOT 及其附带库、图形兼容库和 Delphes 头文件的搜索路径，保证生成的字典也能正确加载。
 
 ## 6. 校验与开始学习
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 tools/uv/bin/uv pip check --python .venv/bin/python
 python -c "import sys, ROOT, pythia8mc, parnassus; print(sys.executable); print(ROOT.__file__); print(pythia8mc.__file__); print(parnassus.__file__); ROOT.gROOT.SetBatch(True); assert ROOT.gSystem.Load('tools/delphes/libDelphes.so') >= 0"

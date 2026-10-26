@@ -122,13 +122,13 @@ def main():
     try:
         import ROOT
     except ImportError as error:
-        raise RuntimeError("PyROOT is unavailable; source env.sh and activate .venv first") from error
+        raise RuntimeError("PyROOT is unavailable; source scripts/env.sh and activate .venv first") from error
     ROOT.gROOT.SetBatch(True)
     ROOT.gStyle.SetOptStat(0)
-    project = Path(os.environ.get("DETECTOR_HOME", Path.cwd()))
+    project = Path(os.environ.get("DETECTOR_HOME", Path(__file__).resolve().parents[1]))
     library = project / "tools/delphes/libDelphes.so"
     if not library.is_file() or ROOT.gSystem.Load(str(library)) < 0:
-        raise RuntimeError(f"Cannot load Delphes classes: {library}; source env.sh first")
+        raise RuntimeError(f"Cannot load Delphes classes: {library}; source scripts/env.sh first")
 
     products = [args.out / name for name in ("comparison_histograms.root", "counts.json",
                 "muon_pt.png", "muon_pt.pdf", "dimuon_mass.png", "dimuon_mass.pdf")]

@@ -1,4 +1,4 @@
-# 本机验证示例
+# 参考验证结果
 
 [English](README.md)
 
@@ -13,12 +13,12 @@
 
 图在指定绘图区间内归一化。曲线面积不保留接受率；接受率必须用原始计数计算。图显示中央值，200 事件不足以验证精细探测器性能。两种程序的粒子流、效率及隔离细节不同，不要求曲线完全重合。
 
-在 Linux 项目根目录运行 `python plot.py` 可分析自己的 `out/delphes.root` 和 `out/parnassus.root`，结果写入 `out/plots`；其中 `counts.json` 保存未归一化计数。只重画本机参考结果时运行：
+在 Linux 项目根目录运行 `python scripts/plot.py` 可分析自己的 `out/delphes.root` 和 `out/parnassus.root`，结果写入 `out/plots`；其中 `counts.json` 保存未归一化计数。完成安装并生成自己的探测器输出后，运行：
 
 ```bash
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
-python plot.py --delphes out/reference/delphes.root --parnassus out/reference/parnassus.root --out out/refplots
+python scripts/plot.py --delphes out/delphes.root --parnassus out/parnassus.root --out out/plots
 ```
 
 仓库不分发这两份原始探测器文件。脚本与下面五条参考直方图逐 bin 核对过内容、误差和 entries；选择及归一化定义保持一致。
@@ -30,7 +30,7 @@ python plot.py --delphes out/reference/delphes.root --parnassus out/reference/pa
 如果只想检查现有直方图，从 Linux 项目根目录进入 ROOT 的 Python：
 
 ```bash
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 python
 ```

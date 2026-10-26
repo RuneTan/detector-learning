@@ -20,7 +20,7 @@ CPU PyTorch 等其他 Python 依赖保留各自许可。安装时将它们下载
 
 ## 本仓库实际发布的材料
 
-手册与说明图是独立编写的教学整理。`hepmc_io.py` 是调用 Pythia/pyhepmc 公开 API 的自有格式适配层；`plot.py` 是调用 ROOT API 的自有分析脚本。它们不包含上游生成器、探测器模型或复制的教程分析实现。`config/shower.cmnd` 和 `config/parnassus.yaml` 只填写所说明接口的设置。
+手册与说明图是独立编写的教学整理。`scripts/hepmc_io.py` 是调用 Pythia/pyhepmc 公开 API 的自有格式适配层；`scripts/plot.py` 是调用 ROOT API 的自有分析脚本。它们不包含上游生成器、探测器模型或复制的教程分析实现。`config/shower.cmnd` 和 `config/parnassus.yaml` 只填写所说明接口的设置。
 
 图、数值验证记录及 `examples/comparison_histograms.root` 内的五条 `TH1D` 来自本地模拟。ROOT 示例只有直方图，不含完整探测器事件树或嵌入源码/宏。这些小样本结果不代表与完整探测器模拟等价。
 

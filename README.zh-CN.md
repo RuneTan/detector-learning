@@ -2,61 +2,57 @@
 
 [English](README.md)
 
-一份手动完成 **MadGraph → Pythia → Delphes / Parnassus** 的教程。沿着文件认识一个小型模拟闭环，理解每个包的作用，再逐项改变设置。重复性的分析与画图交给一个 ROOT 脚本。
+一份手动完成 **MadGraph → Pythia → Delphes / Parnassus** 的教程。沿着一个小样本理解硬散射、shower、探测器响应与分析，再逐项改变设置并检查结果。
 
-**从 [handbook](docs/handbook.zh-CN.md) 开始。** 新机器先按 [setup](docs/setup.zh-CN.md) 安装。本项目有独立的 Python 3.12 环境和工具链；[SMEFTsim 学习教程](https://github.com/RuneTan/smeftsim-learning) 是教学参考，不是安装前提。
+## 从哪里开始
 
-基准是 13 TeV 下 200 个 SM Drell–Yan 事件，`p p > mu+ mu-`。Delphes 和 Parnassus 读取**同一份 HepMC3 文件**。Parnassus 使用 CPU 参数化 CMS 模式；本练习不训练或验证神经探测器模型。
+仓库提供教学文件和小型参考结果。**克隆仓库不会自动安装 Linux、Python 或模拟软件。**
 
-```mermaid
-flowchart LR
-    MG[MadGraph] --> LHE[out/hard.lhe]
-    LHE --> PY[Pythia]
-    PY --> HEP[out/showered.hepmc]
-    HEP --> DEL[Delphes]
-    HEP --> PAR[Parnassus]
-    DEL --> PLOT[plot.py / ROOT]
-    PAR --> PLOT
-    PLOT --> FIG[out/plots]
-```
-
-教程与说明集中在 [docs](docs/README.md)。
-
-| 文件或目录 | 用途 |
+| 你的起点 | 下一步 |
 |---|---|
-| [handbook](docs/handbook.zh-CN.md) | 包的调用、输入输出和单设置练习 |
-| [setup](docs/setup.zh-CN.md) | 在 Linux 独立安装 Python、ROOT 和工具链 |
-| [dependencies](docs/dependencies.zh-CN.md) | 系统、环境和软件包的依赖关系 |
-| `env.sh` | 只设置当前终端路径，不改 shell 配置或全局 Python |
-| `hepmc_io.py` | Pythia/HepMC 适配层，核对稳定粒子和四动量 |
-| `plot.py` | 读取探测器输出，检查事件数，生成 ROOT 图和计数 |
-| `bin/root-config` | 修正固定 ROOT wheel 的编译路径，不改 ROOT |
-| `requirements.lock.txt` | 锁定 Python 依赖，包括 ROOT 和 CPU PyTorch |
-| `config` | Pythia、Parnassus 设置；Delphes 卡在安装时从上游复制 |
-| [examples](examples/README.zh-CN.md) | 参考图、验证记录和直方图 |
-| `tools`、`work/dy`、`out` | 本地软件、MadGraph 过程和运行产物，不随仓库分发 |
-| [SOURCES](docs/SOURCES.zh-CN.md) | 上游教程和固定版本 |
-| [第三方声明](docs/THIRD_PARTY_NOTICES.zh-CN.md) | 软件署名、科学引用和许可范围 |
+| Windows，尚未安装 Linux | 按 [安装指南](docs/setup.zh-CN.md) 准备 WSL 2 和 Ubuntu，再在 Ubuntu 终端中继续 |
+| 已有原生 Linux 或 WSL 2 Ubuntu | 按 [安装指南](docs/setup.zh-CN.md) 安装本项目环境和工具 |
+| 已完成安装检查 | 按 [学习手册](docs/handbook.zh-CN.md) 生成事件并运行探测器链 |
+| 只想浏览已有图 | 查看 [参考结果](examples/README.zh-CN.md) |
 
-在 Linux 中克隆小型教学仓库，再按安装指南操作：
+文档使用的平台是 x86-64 Ubuntu 22.04，可原生运行或置于 WSL 2 中。SMEFTsim 学习仓库是 [相关教程](https://github.com/RuneTan/smeftsim-learning)，不需要先安装它。
+
+完成安装后，在 **Linux Bash** 中逐条执行：
 
 ```bash
-git clone https://github.com/RuneTan/detector-learning.git ~/detector-learning
 cd ~/detector-learning
+source scripts/env.sh
+source .venv/bin/activate
 ```
 
-软件、`.venv`、原始运行文件和维护日志不上传。新读者自行生成原始输入，仓库只附小型参考结果。
+接着从 [手册第 3 节](docs/handbook.zh-CN.md#3-madgraph准备硬散射输入) 开始，先生成分析需要的输入。两份探测器 ROOT 文件都生成后，再运行：
 
-![稳定 truth 与探测器层 Muon 横动量比较](examples/muon_pt.png)
+```bash
+python scripts/plot.py
+```
 
-图在绘图区间内归一化，用于比较形状，不表示绝对截面。计数和限制见 [示例说明](examples/README.zh-CN.md)。
+它读取 `out/delphes.root` 和 `out/parnassus.root`，检查事件数，将图、直方图和计数写入 `out/plots`。
 
-## 当前机器说明
+## 仓库结构
 
-现有安装位于 WSL 发行版 `SMEFTsim` 的 `/home/smeft/detector-learning`。其独立 Python 3.12.12 环境包含 ROOT/PyROOT、Pythia 和 Parnassus，MadGraph 与 Delphes 也在项目内；运行时不读取 `/home/smeft/smeftsim` 的解释器、包或共享库。
+| 位置 | 内容 |
+|---|---|
+| [docs](docs/README.md) | 安装指南、学习手册、依赖、来源与第三方声明 |
+| [scripts](scripts/README.zh-CN.md) | 环境设置、ROOT 分析及 Pythia/HepMC 格式适配 |
+| [config](config) | Pythia 与 Parnassus 设置；Delphes 卡的获取方式见安装指南 |
+| [examples](examples/README.zh-CN.md) | 小型参考图、直方图和验证记录 |
+| `bin/root-config` | 固定版本 ROOT wheel 的编译辅助工具 |
+| `requirements.lock.txt` | 固定 Python 依赖 |
+| `tools`、`.venv`、`work`、`out` | 安装或运行时创建，Git 不收录 |
 
-本机双击 `enter-linux.cmd`，从手册第 2 节开始。已有两份探测器输出时运行 `python plot.py` 即可。入口中的发行版名、用户名和目录属于本机，其他机器使用前需要修改；原生 Linux 不需要这些入口。
+除明确切换目录的步骤外，文档命令均从项目根目录运行。Windows 读者应先打开已安装的 Ubuntu，再输入 Linux 命令。
 
-两个项目共享 Ubuntu 和编译器。Windows 的 `projects/smeftsim/vm/SMEFTsim/ext4.vhdx` 承载整个 Linux 文件系统，包含两个项目，**不能删除**。Windows 教程目录只保留 README 和启动入口，文档与计算均在 Linux，详见 [依赖关系](docs/dependencies.zh-CN.md)。
+## 示例与范围
 
-这是学习与接口验证项目。署名、科学引用和许可边界见 [第三方声明](docs/THIRD_PARTY_NOTICES.zh-CN.md)；自有文件尚未选择统一再使用许可证。
+参考练习使用 13 TeV 下的 200 个 SM Drell–Yan 事件，过程为 `p p > mu+ mu-`。Delphes 和 Parnassus 读取同一份 HepMC3 输入。Parnassus 使用 CPU 参数化 CMS 响应；本练习不训练或验证神经探测器模型。
+
+![稳定 truth 与重建 Muon 横动量](examples/muon_pt.png)
+
+图在绘图区间内归一化，用于比较形状。计数和限制见 [参考结果](examples/README.zh-CN.md)。仓库不分发完整原始事件，请按手册生成自己的输入。
+
+这是学习与接口验证项目。署名与许可范围见 [第三方声明](docs/THIRD_PARTY_NOTICES.zh-CN.md)；自有文件尚未选择统一再使用许可证。

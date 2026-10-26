@@ -2,7 +2,7 @@
 
 [简体中文](setup.zh-CN.md)
 
-The prepared machine has already passed installation and runtime checks: use the [handbook](handbook.md). This page is for a new machine or a rebuild. **You do not need to install the SMEFTsim tutorial first.** See [dependencies.md](dependencies.md) for the dependency layers.
+This guide starts with a machine that has not installed the tutorial. A clone contains teaching files, not a ready-to-run simulation environment. Prepare Linux, install the dependencies and complete the checks below before using the [handbook](handbook.md). The SMEFTsim tutorial is not a prerequisite; [dependencies](dependencies.md) explains the environment.
 
 The pinned route uses x86-64 Ubuntu 22.04, project-local Python 3.12.12, one `.venv`, and the project's own MadGraph, ROOT, Pythia, Delphes and Parnassus. Linux supplies the compilers; Python and scientific software live inside the project. These steps do not change Windows Python or another project's environment.
 
@@ -10,7 +10,7 @@ Enter each complete Bash command, press Enter once, and wait for the prompt befo
 
 ## 1. Prepare Linux
 
-The prepared machine can keep using its WSL distribution named `SMEFTsim`; a second virtual disk is unnecessary.
+Use an x86-64 Ubuntu 22.04 environment. Native Linux users continue with the system tools below. Windows users first install WSL 2 and Ubuntu.
 
 On a new Windows machine, follow [Microsoft's WSL installation guide](https://learn.microsoft.com/windows/wsl/install) to install Ubuntu 22.04. In an administrator **PowerShell** window:
 
@@ -18,7 +18,14 @@ On a new Windows machine, follow [Microsoft's WSL installation guide](https://le
 wsl --install -d Ubuntu-22.04
 ```
 
-Restart if prompted, launch Ubuntu, and choose your Linux username and password. All commands below run in **Linux Bash**. Skip this paragraph if you already use native Ubuntu or WSL Ubuntu.
+Restart if prompted. Open Ubuntu 22.04 from the Start menu and create your Linux username and password. You can inspect installed distributions and open Ubuntu from PowerShell:
+
+```powershell
+wsl --list --verbose
+wsl -d Ubuntu-22.04
+```
+
+The version column should show 2 for this distribution. All remaining commands run in the Ubuntu terminal, in Linux Bash. Native Linux users skip the WSL commands.
 
 Install the system tools once:
 
@@ -30,7 +37,7 @@ g++ --version
 gfortran --version
 ```
 
-Expect `x86_64` and compiler version information. Here `sudo` installs Linux system tools, never Python packages. The prepared machine already has these tools.
+Expect `x86_64` and compiler version information. Here `sudo` installs Linux system tools, never Python packages. If these tools are already installed, check their versions before skipping this step.
 
 ## 2. Obtain the teaching files
 
@@ -40,14 +47,14 @@ Clone inside the Linux filesystem, rather than `/mnt/c`:
 git clone https://github.com/RuneTan/detector-learning.git ~/detector-learning
 cd ~/detector-learning
 mkdir -p tools work out
-source env.sh
+source scripts/env.sh
 ```
 
-If the repository is already present, skip cloning and enter its directory. `env.sh` finds the project from its own location and keeps Python downloads, the uv cache and terminal paths inside it; it does not edit `.bashrc`. Python and ROOT will be created below.
+If the repository is already present, skip cloning and enter its directory. `scripts/env.sh` finds the project from its own location and keeps Python downloads, the uv cache and terminal paths inside it; it does not edit `.bashrc`. Python and ROOT will be created below.
 
-Windows File Explorer can access the project at `\\wsl.localhost\YOUR-DISTRIBUTION\home\YOUR-USERNAME\detector-learning`. The prepared machine uses `\\wsl.localhost\SMEFTsim\home\smeft\detector-learning`.
+Windows readers can open `\\wsl.localhost\Ubuntu-22.04\home\YOUR_LINUX_USERNAME\detector-learning` in File Explorer after cloning. Replace the distribution and username with the ones you created; obtain the distribution name with `wsl --list --verbose`.
 
-`enter-linux.ps1` contains that machine's distribution, username and Linux directory. Replace them before using the launcher elsewhere. Native Linux does not need Windows launchers.
+Open your installed Ubuntu terminal for daily use and run `cd ~/detector-learning`. No preconfigured Windows launcher is required.
 
 ## 3. Install project-local Python and scientific packages
 
@@ -77,7 +84,7 @@ The lock file records runtime dependencies. Install Parnassus itself from pinned
 
 ROOT wheel `0.1a12` contains ROOT 6.40.00. This is the pinned, tested build for the tutorial, not a claim about the latest release. It provides C++ ROOT libraries, command-line tools and PyROOT. A wheel for a different Python minor version cannot be reused.
 
-The prepared minimal Ubuntu lacks libSM/libICE required by ROOT graphics. Download Ubuntu packages and **extract them inside the project**, without installing them with `sudo`:
+Some minimal Ubuntu installations need libSM/libICE for ROOT graphics. The following commands download Ubuntu packages and extract them inside this project, without installing them globally:
 
 ```bash
 mkdir -p .venv/local-libs/debs
@@ -97,7 +104,7 @@ Return to the project root:
 
 ```bash
 cd ../../..
-source env.sh
+source scripts/env.sh
 python -c "import ROOT, torch; print(ROOT.gROOT.GetVersion()); print(torch.__version__)"
 ```
 
@@ -139,7 +146,7 @@ The pinned ROOT wheel's `root-config` output contains an extra `mock_site_packag
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 chmod +x bin/root-config
 which python
@@ -151,15 +158,15 @@ ls -lh tools/delphes/DelphesHepMC3 tools/delphes/libDelphes.so tools/delphes/Cla
 
 `python` should be in this project's `.venv/bin`; `root-config` in its `bin`. Header paths should point to its ROOT installation. `-j4` controls parallel compilation, not event count. Build only the required program, shared library and dictionaries; this exercise needs no additional readers or C++ Pythia/HepMC libraries.
 
-If this Delphes tree was previously built against another ROOT installation, first run `make -C tools/delphes clean`, then build as above. The prepared machine has already been rebuilt; daily use does not require recompilation.
+If this Delphes tree was previously built against another ROOT installation, first run `make -C tools/delphes clean`, then build as above. Build against the ROOT installed by this guide; daily use does not require recompilation.
 
-`env.sh` supplies search paths for this project's ROOT, bundled libraries, graphics compatibility libraries and Delphes headers, allowing the generated dictionaries to load correctly.
+`scripts/env.sh` supplies search paths for this project's ROOT, bundled libraries, graphics compatibility libraries and Delphes headers, allowing the generated dictionaries to load correctly.
 
 ## 6. Validate and start learning
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 tools/uv/bin/uv pip check --python .venv/bin/python
 python -c "import sys, ROOT, pythia8mc, parnassus; print(sys.executable); print(ROOT.__file__); print(pythia8mc.__file__); print(parnassus.__file__); ROOT.gROOT.SetBatch(True); assert ROOT.gSystem.Load('tools/delphes/libDelphes.so') >= 0"

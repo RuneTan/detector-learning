@@ -2,9 +2,9 @@
 
 [简体中文](handbook.zh-CN.md)
 
-Use 200 SM dimuon events to understand a simulation chain. Read the [README](../README.md) first. The prepared machine is ready; on a new machine, follow [setup.md](setup.md). See [dependencies.md](dependencies.md) for the dependency layers.
+Use 200 SM dimuon events to understand a simulation chain. Start with the [README](../README.md), then complete [setup](setup.md) before running package commands. [Dependencies](dependencies.md) explains the environment.
 
-The focus is how three packages process events. You call Pythia, run both detector backends and inspect their outputs. The supplied `plot.py` handles plots and count summaries, so you do not need to type a plotting program into the interpreter.
+The focus is how three packages process events. You call Pythia, run both detector backends and inspect their outputs. The supplied `scripts/plot.py` handles plots and count summaries, so you do not need to type a plotting program into the interpreter.
 
 For each **Bash command: enter the whole line → press Enter → wait for the prompt**. Inside Python the prompt is `>>>`: press Enter after each ordinary statement, and an extra blank Enter after a loop. Edit card contents in an editor.
 
@@ -16,13 +16,13 @@ The benchmark is $pp\to\mu^+\mu^-$ at a center-of-mass energy of 13 TeV, with a 
 flowchart LR
     MG["MadGraph: hard scattering"] --> LHE["out/hard.lhe"]
     LHE --> PY["Pythia: radiation, hadronization, decays"]
-    PY --> IO["hepmc_io.py: format conversion"]
+    PY --> IO["scripts/hepmc_io.py: format conversion"]
     IO --> HEP["out/showered.hepmc"]
     HEP --> DEL["Delphes + CMS Tcl card"]
     HEP --> PAR["Parnassus + CMS YAML card"]
     DEL --> DR["out/delphes.root"]
     PAR --> PR["out/parnassus.root"]
-    DR --> PLOT["plot.py: ROOT analysis"]
+    DR --> PLOT["scripts/plot.py: ROOT analysis"]
     PR --> PLOT
     PLOT --> FIG["out/plots: figures and counts"]
 ```
@@ -43,11 +43,11 @@ Here “truth” means stable particles after showering and hadronization. ISR i
 
 ## 2. Enter the project and use short paths
 
-On the prepared Windows machine, double-click `enter-linux.cmd`. After the Linux prompt appears, run these commands one at a time:
+Open a Linux terminal. On Windows, open the Ubuntu distribution installed during setup. Run these commands one at a time:
 
 ```bash
 cd ~/detector-learning
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 python --version
 ```
@@ -63,23 +63,15 @@ Expect Python 3.12.12. Unless a later step explicitly uses `cd`, execute command
 | `out/plots` | Figures, histograms and counts produced by the plotting script |
 | `examples` | Small reference results supplied with the tutorial |
 
-The prepared machine uses these short names and retains the old names as symlinks. Results previously generated in `outputs` or `work/drell_yan` remain available; no rerun or copying is required. Use the short names from now on.
+The paths above are the names used throughout the guide. Create software, process and output directories as instructed; they do not arrive prepopulated with a clone.
 
-MadGraph, Pythia, Parnassus and ROOT use this environment's `python`. Delphes is a C++ program linked to this project's ROOT. `env.sh` affects only the current terminal; open a new terminal when returning to the separate SMEFTsim project.
+MadGraph, Pythia, Parnassus and ROOT use this environment's `python`. Delphes is a C++ program linked to this project's ROOT. `scripts/env.sh` affects only the current terminal; open a new terminal when returning to the separate SMEFTsim project.
 
 ## 3. MadGraph: prepare the hard-scattering input
 
 This stage reads the process definition and cards, and writes **LHE**. It calculates hard-scattering matrix elements and samples phase space; it does not yet produce a complete hadronic event or detector response.
 
-If you already generated `out/hard.lhe`, continue at section 4. The prepared machine also retains a reference input. To study only the downstream stages there:
-
-```bash
-mkdir -p out
-cp -n out/reference/hard.lhe out/hard.lhe
-grep -c '<event>' out/hard.lhe
-```
-
-`cp -n` does not overwrite an existing target. Expect 200 events. This full LHE is not distributed, so new installations must generate it using the following steps.
+If you have already generated your own `out/hard.lhe`, continue at section 4. Fresh clones do not include a full LHE input. Generate it using sections 3.1–3.3 below.
 
 ### 3.1 Export the process
 
@@ -223,7 +215,7 @@ The following uses `"w"`, overwriting an existing HepMC file with that name. If 
 
 ```python
 import pyhepmc
-from hepmc_io import to_hepmc
+from scripts.hepmc_io import to_hepmc
 pythia = pythia8mc.Pythia()
 assert pythia.readFile("config/shower.cmnd")
 assert pythia.init()
@@ -251,7 +243,7 @@ exit()
 
 `close()` finishes writing; `nAccepted()` returns the successfully processed count; `stat()` prints statistics without generating another event. Expect 200 accepted events. If a `next()` fails, stop and inspect it here rather than retrying forever after EOF.
 
-The supplied `hepmc_io.py` adapter uses `GenEvent.from_hepevt`, sets GeV/mm units, and transfers stable particles, four-momenta, production positions and the SM weight. It checks stable-particle counts and four-momenta before and after conversion. It does not run another shower or detector response.
+The supplied `scripts/hepmc_io.py` adapter uses `GenEvent.from_hepevt`, sets GeV/mm units, and transfers stable particles, four-momenta, production positions and the SM weight. It checks stable-particle counts and four-momenta before and after conversion. It does not run another shower or detector response.
 
 The adapter makes vertex encoding explicit for the Delphes 3.5.1 reader. `vertex.status=1` is a vertex-encoding marker, not a particle cut. Complete multigeneration histories and SMEFT multiweight propagation are outside the validated scope. See [SOURCES.md](SOURCES.md) for the APIs.
 
@@ -274,11 +266,11 @@ You should now distinguish loading settings, initializing, generating one event 
 - **Input:** The same `out/showered.hepmc` and a CMS Tcl card.
 - **Processing:** Efficiencies, resolutions, calorimetry and reconstruction, following the card's module order.
 - **Output:** `out/delphes.root`, with a tree named `Delphes`.
-- **Next reader:** `plot.py` reads branches including `Muon` and `Particle`.
+- **Next reader:** `scripts/plot.py` reads branches including `Muon` and `Particle`.
 
 ### 5.1 The Tcl card is a module execution graph
 
-The prepared machine already has `config/delphes_CMS.tcl`; read it directly. In a new workspace, prepare it once:
+Create `config/delphes_CMS.tcl` from the installed Delphes card once. If you previously configured this file, keep it and skip copying:
 
 ```bash
 cp tools/delphes/cards/delphes_card_CMS.tcl config/delphes_CMS.tcl
@@ -318,14 +310,14 @@ tools/delphes/DelphesHepMC3 config/delphes_CMS.tcl out/delphes.root out/showered
 
 The program reads each event, runs the module graph and writes the tree. It calls neither MadGraph nor Pythia. The order “card, output, input” follows the [Delphes interface](https://delphes.github.io/workbook/quick-tour/).
 
-Delphes refuses to overwrite an existing ROOT file. If you completed the earlier handbook, skip rerunning this baseline. For a new setting, choose a name such as `out/delphes2.root`. Section 7 checks the tree's event count; normal termination alone does not prove that no events were lost.
+Delphes refuses to overwrite an existing ROOT file. If you have already completed this baseline, skip rerunning it. For a new setting, choose a name such as `out/delphes2.root`. Section 7 checks the tree's event count; normal termination alone does not prove that no events were lost.
 
 ## 6. Parnassus: a different response to the same input
 
 - **Input:** The same `out/showered.hepmc` and a YAML card.
 - **Processing:** Parametric CMS response, followed by the YAML clustering and isolation calculations.
 - **Output:** `out/parnassus.root`, with a tree named `Parnassus`.
-- **Next reader:** `plot.py` reads branches including `Muons.*` for comparison with Delphes.
+- **Next reader:** `scripts/plot.py` reads branches including `Muons.*` for comparison with Delphes.
 
 ### 6.1 Distinguish the response model from postprocessing pipelines
 
@@ -379,7 +371,7 @@ The log should report 200 processed events. Each tree entry represents an event.
 After running both detector backends, enter in **Bash**:
 
 ```bash
-python plot.py
+python scripts/plot.py
 ```
 
 The script reads `out/delphes.root` and `out/parnassus.root`, checks trees, branches and 200 events in each, then plots with ROOT. It does not rerun simulations or modify either input. Rerunning replaces analysis products with the same names in `out/plots`.
@@ -400,10 +392,10 @@ First run `cat out/plots/counts.json`, then open the images. In WSL, `explorer.e
 For different output names, tell the script explicitly:
 
 ```bash
-python plot.py --delphes out/delphes2.root --parnassus out/parnassus.root --out out/plots2
+python scripts/plot.py --delphes out/delphes2.root --parnassus out/parnassus.root --out out/plots2
 ```
 
-If the event count changes, add `--expect` followed by the new count. Run `python plot.py --help` for arguments. The ROOT statements are collected in one source file; you do not need to type them into the terminal.
+If the event count changes, add `--expect` followed by the new count. Run `python scripts/plot.py --help` for arguments. The ROOT statements are collected in one source file; you do not need to type them into the terminal.
 
 ## 8. Understand a pipeline through one small change
 
@@ -420,7 +412,7 @@ Under `MuonIsolation` only, change `dr: 0.5` to `dr: 0.3`. Do not change the jet
 
 ```bash
 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 parnassus run -c config/iso.yaml -i out/showered.hepmc -ne 200 -bs 10 -o out/iso.root --random_seed 31415
-python plot.py --parnassus out/iso.root --out out/iso
+python scripts/plot.py --parnassus out/iso.root --out out/iso
 ```
 
 This `parnassus run` command still reruns the full response and postprocessing from HepMC. Keeping input, model, seed, batch size and version fixed reproduces the original muon momenta; the new change comes from the isolation postprocessing cone. Compare `out/plots/counts.json` and `out/iso/counts.json`. The muons passing isolation may change, although a small sample need not show a count change. The isolation variable and selection together determine the collection used in the plots.

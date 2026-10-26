@@ -13,12 +13,12 @@ These results come from a local 200-event SM Drell–Yan exercise on 2026-10-14.
 
 Plots are normalized within the specified plotting range. Their areas do not preserve acceptance; calculate acceptance from raw counts. The curves show central values, and 200 events cannot validate detailed detector performance. Particle-flow, efficiency and isolation implementations differ between backends, so exact agreement is not required.
 
-From the Linux project root, `python plot.py` analyzes your `out/delphes.root` and `out/parnassus.root`, writing to `out/plots`; `counts.json` preserves unnormalized counts. To replot the full reference outputs kept on the prepared machine:
+From the Linux project root, `python scripts/plot.py` analyzes your `out/delphes.root` and `out/parnassus.root`, writing to `out/plots`; `counts.json` preserves unnormalized counts. After completing setup and generating your own detector outputs, run:
 
 ```bash
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
-python plot.py --delphes out/reference/delphes.root --parnassus out/reference/parnassus.root --out out/refplots
+python scripts/plot.py --delphes out/delphes.root --parnassus out/parnassus.root --out out/plots
 ```
 
 Those two raw detector files are not distributed in the repository. The script has been checked bin by bin against the five reference histograms below, including contents, errors and entries; selection and normalization definitions match.
@@ -30,7 +30,7 @@ Those two raw detector files are not distributed in the repository. The script h
 To inspect only the supplied histograms, start Python with ROOT from the Linux project root:
 
 ```bash
-source env.sh
+source scripts/env.sh
 source .venv/bin/activate
 python
 ```
